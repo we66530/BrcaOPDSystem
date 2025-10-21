@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Patient Portal</title>
+</head>
+<body>
+  <h2>Patient Check-in</h2>
+  <label>Name: <input id="name"></label><br>
+  <label>Age: <input id="age"></label><br>
+  <label>Purpose: <input id="purpose"></label><br>
+  <button onclick="submit()">Submit</button>
+  <p id="status"></p>
+
+  <h3>Your Doctor's Reply</h3>
+  <button onclick="checkReply()">Refresh</button>
+  <p id="reply"></p>
+
+  <script>
+    function submit() {
+      google.script.run.withSuccessHandler(function(msg){
+        document.getElementById("status").innerText = msg;
+      }).submitPatient(
+        document.getElementById("name").value,
+        document.getElementById("age").value,
+        document.getElementById("purpose").value
+      );
+    }
+
+    function checkReply() {
+      google.script.run.withSuccessHandler(function(res){
+        document.getElementById("reply").innerText =
+          "Purpose: " + res.purpose + "\nReply: " + res.reply;
+      }).getPatientReply(
+        document.getElementById("name").value,
+        document.getElementById("age").value
+      );
+    }
+  </script>
+</body>
+</html>
