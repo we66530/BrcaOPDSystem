@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Dashboard</title>
+</head>
+<body>
+  <h2>Doctor Dashboard</h2>
+  <table border="1" id="patients"></table>
+
+  <script>
+    function loadPatients() {
+      google.script.run.withSuccessHandler(function(data){
+        var html = "<tr><th>Row</th><th>Name</th><th>Age</th><th>Purpose</th><th>Reply</th><th>Action</th></tr>";
+        for (var i=1; i<data.length; i++) { // skip header
+          html += "<tr>" +
+            "<td>" + i + "</td>" +
+            "<td>" + data[i][1] + "</td>" +
+            "<td>" + data[i][2] + "</td>" +
+            "<td>" + data[i][3] + "</td>" +
+            "<td><input id='reply"+i+"' value='"+data[i][4]+"'></td>" +
+            "<td><button onclick='saveReply("+i+")'>Save</button></td>" +
+            "</tr>";
+        }
+        document.getElementById("patients").innerHTML = html;
+      }).getAllPatients();
+    }
+
+    function saveReply(row) {
+      var reply = document.getElementById("reply"+row).value;
+      google.script.run.withSuccessHandler(function(msg){
+        alert(msg);
+        loadPatients();
+      }).saveDoctorReply(row, reply);
+    }
+
+    loadPatients();
+  </script>
+</body>
+</html>
